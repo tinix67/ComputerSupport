@@ -1,0 +1,286 @@
+---
+title: "Task2"
+autor: "Tetiana Zubrova"
+date: "10/11/2025"
+format:
+  html:
+    embed-resources: true
+editor: source
+---
+## Task 2: Subsetting & Missing Data
+
+### 2.1. Querying Vectors
+
+Let's start with the vectors you created
+- Select and print all values that are greater than 20 (or another number that makes sense for your data).
+
+```{r}
+# ------------------- Unified, self-contained R script -------------------
+# Purpose: combine your two setup blocks; use Šamorín in your_df. in Task 1.
+
+# 1) Task 1: safe creation of sequence_vector, logical_vector, matrix m
+if (!exists("sequence_vector")) {
+  sequence_vector <- seq(20, 100, by = 5)
+}
+
+if (!exists("logical_vector")) {
+  set.seed(123)
+  logical_vector <- sample(c(TRUE, FALSE), size = 10, replace = TRUE)
+}
+
+if (!exists("m")) {
+  set.seed(42)
+  m <- matrix(sample(-50:50, 9, replace = TRUE), nrow = 3, byrow = TRUE)
+  # Use ASCII-friendly row/col names to avoid encoding issues in some consoles
+  rownames(m) <- c("Centrum", "Juh", "Sever")    # "Juh" = "Juhozápad"
+  colnames(m) <- c("Doprava", "Zelen", "Voda")   # "Zelen" = "Zeleň"
+}
+
+# 2) Task 2: create (or replace) your_df but with Šamorín included
+# Note: we keep 'name' as "Šamorín" (diacritic). If that creates issues,
+# replace with "Samorin".
+your_df <- data.frame(
+  name         = c("Šamorín", "Ivanka pri Dunaji", "Senec", "Tomášov", "Malinovo"),
+  region       = c("Bratislavský kraj", "Bratislavský kraj", "Bratislavský kraj",
+                   "Bratislavský kraj", "Bratislavský kraj"),
+  category     = c("selo", "Obec", "Mesto", "Obec", "Obec"),
+  population   = c(13672L, 6800L, 21000L, 3800L, 4300L),
+  area_km2     = c(44.35, 18.1, 38.6, 19.7, 10.2),
+  is_inhabited = c(TRUE, TRUE, TRUE, TRUE, TRUE),
+  has_water    = c(TRUE, TRUE, TRUE, FALSE, TRUE),
+  stringsAsFactors = FALSE
+)
+
+# 3) Alternative small Task 2 objects you posted — create if missing
+if (!exists("sequence_vector_small")) sequence_vector_small <- seq(10, 50, by = 10)
+if (!exists("logical_vector_small")) logical_vector_small <- c(TRUE, FALSE, TRUE, TRUE, FALSE)
+if (!exists("m_small")) m_small <- matrix(1:9, nrow = 3)
+
+# 4) Example derived column (priority) for your_df using same rule as before
+your_df$priority <- with(
+  your_df,
+  ifelse(population > 1000 & !has_water, "high",
+         ifelse(population > 1000, "medium", "low"))
+)
+your_df$priority <- factor(your_df$priority, levels = c("low", "medium", "high"), ordered = TRUE)
+
+# 5) Quick inspections (safe to run)
+cat("Structure of m (matrix):\n"); print(str(m))
+cat("\nMatrix m (values):\n"); print(m)
+cat("\nStructure of your_df:\n"); print(str(your_df))
+cat("\nSummary of your_df:\n"); print(summary(your_df))
+cat("\nTable of priority:\n"); print(table(your_df$priority))
+
+# ---------------------------------------------------------------------
+# If you want ASCII-only names everywhere (including "Samorin"), run:
+# your_df$name <- gsub("Š", "S", your_df$name); your_df$name <- gsub("á","a",your_df$name)
+# ---------------------------------------------------------------------
+```
+```{r}
+# --- Setup for Task 2: basic objects ---
+
+# Create a numeric sequence vector
+sequence_vector <- seq(10, 50, by = 10)
+
+# Create a logical vector
+logical_vector <- c(TRUE, FALSE, TRUE, TRUE, FALSE)
+
+# Create a 3x3 matrix
+m <- matrix(1:9, nrow = 3)
+```
+
+2.1.1. From your Sequence vector (the one with all your numbers):
+# ---- 2.1.1 Sequence vector ----
+
+```{r}
+# ---- 2.1.1 Sequence vector ----
+sequence_vector[3]
+sequence_vector[2:5]
+sequence_vector[sequence_vector > 20]
+```
+2.1.2. From your Logical vector:
+
+# ---- 2.1.2 Logical vector ----
+
+```{r}
+# ---- 2.1.2 Logical vector ----
+logical_vector[logical_vector]
+which(logical_vector)
+```
+
+
+### 2.2. Querying Your "Universe" List
+
+Use your main list from Task 1.
+
+- Access and print the description string using the $ operator
+- Access and print your 3x3 matrix using double brackets [[ ]].
+- Access and print the second element from your vector element within the list. (This will be a "list-within-a-list" access).
+
+```{r}
+
+# reproducible 3x3 matrix
+set.seed(42)
+m <- matrix(sample(-50:50, 9, replace = TRUE), nrow = 3, byrow = TRUE)
+rownames(m) <- c("Centrum", "Juh", "Sever")   # ASCII names
+colnames(m) <- c("Doprava", "Zelen", "Voda")
+
+# sequence vector
+sequence_vector <- seq(from = 20, to = 100, by = 5)
+
+# assemble universe list for Samorin
+samorin_universe <- list(
+  description = "Mini-universe of Samorin and surroundings.",
+  matrix3x3   = m,
+  vec         = sequence_vector
+)
+
+# Access examples (prints)
+samorin_universe$description       # access description via $
+samorin_universe[["matrix3x3"]]    # access 3x3 matrix via [[ ]]
+samorin_universe[["vec"]][2]       # access 2nd element of inner vector
+```
+
+
+### 2.3. Investigating Your Data Frame
+
+Use the data frame you created in Task 1.
+
+- Print the first 3 rows. (Use head().)
+- Print the value from the 4th row, 1st column.
+- Print only the column that contains your logical values (e.g., is_habitable) as a vector.
+
+Logical Subsetting: Create a new data frame df_subset that contains only the rows that meet a specific logical condition.
+
+- Example: df_subset <- your_df[your_df$population > 1000, ]
+
+%in% Subsetting: Create a new data frame df_subset_2 that selects rows belonging to two specific categories from your factor or character column.
+
+- Example: df_subset_2 <- your_df[your_df$region %in% c("North", "South"), ]
+
+```{r}
+# Self-contained example for Samorin (ASCII-safe)
+samorin_data <- data.frame(
+  district = c("Centrum", "Mliecno", "Hlboka", "Cilistov", "Bucsuhaza", "Pomle"),
+  pop      = c(3200, 1400, 900, 600, 500, 1100),
+  has_playground = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE),
+  zone = factor(
+    c("mixed", "residential", "residential", "recreational", "residential", "mixed"),
+    levels = c("residential", "mixed", "industrial", "recreational")
+  ),
+  stringsAsFactors = FALSE
+)
+
+# Show the first 3 rows
+head(samorin_data, 3)
+
+# Value from 4th row, 1st column
+samorin_data[4, 1]
+
+# Logical column as a vector
+samorin_data$has_playground
+
+# Logical subsetting (example condition)
+```
+
+
+### 2.4. Handling "Corrupted" Data (NA)
+
+Create a copy of your original data frame (e.g., df_corrupted <- your_df).
+
+Introduce 3 `NA`s into your df_corrupted at specific locations.
+
+- Example: `df_corrupted[2, 3] <- NA`
+
+Find `NAs`:
+
+- Use sum(is.na(df_corrupted)) to find the total number of missing values.
+- Use colSums(is.na(df_corrupted)) to see how many `NA`s are in each column.
+
+Calculate with `NA`s:
+
+- Calculate the `mean() of the numeric column where you added an `NA.
+
+Filter `NA`s:
+
+- Use `na.omit(df_corrupted)` to create a new, "clean" data frame that contains only the complete rows.
+
+```{r}
+# ---------- 2.4 Handling "Corrupted" Data (NA) — Šamorín (bern_data) ----------
+
+# Create bern_data for Šamorín (ASCII-safe names)
+bern_data <- data.frame(
+  district = c("Centrum", "Mliecno", "Hlboka", "Cilistov", "Bucsuhaza", "Pomle"),
+  pop      = c(3200, 1400, 900, 600, 500, 1100),
+  has_playground = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE),
+  zone = factor(
+    c("mixed", "residential", "residential", "recreational", "residential", "mixed"),
+    levels = c("residential", "mixed", "industrial", "recreational")
+  ),
+  dist_km  = c(0.2, 1.4, 1.1, 2.3, 1.8, 2.7),
+  stringsAsFactors = FALSE
+)
+
+# Inspect original
+str(bern_data)
+bern_data
+
+# Copy the dataset
+df_corrupted <- bern_data
+
+# Introduce 3 NA values (exact positions you specified)
+df_corrupted[2, "dist_km"]        <- NA        # 2nd row, dist_km -> NA
+df_corrupted[5, "pop"]            <- NA        # 5th row, pop -> NA
+df_corrupted[3, "has_playground"] <- NA        # 3rd row, has_playground -> NA
+
+# Show the corrupted table
+df_corrupted
+
+# Total number of NA values
+total_na <- sum(is.na(df_corrupted))
+total_na
+
+# Number of NA values per column
+nas_per_col <- colSums(is.na(df_corrupted))
+nas_per_col
+
+# Mean of numeric column 'pop' (with and without NA removal)
+mean_pop_default <- tryCatch(mean(df_corrupted$pop), error = function(e) e)
+mean_pop_na_rm   <- mean(df_corrupted$pop, na.rm = TRUE)
+
+# Print means
+mean_pop_default
+mean_pop_na_rm
+
+# Create a clean version without missing values
+df_clean <- na.omit(df_corrupted)
+df_clean
+
+# Show how many rows were removed
+rows_before <- nrow(df_corrupted)
+rows_after  <- nrow(df_clean)
+rows_before
+rows_after
+
+```
+
+
+### 2.5. Bonus Challenge: `which()`
+
+Use which.max() or which.min() to find the row number (index) of the observation with the highest or lowest value in one of your numeric columns.
+
+Use that index to print the row with that observation.
+
+- Example: highest_pop_index <- which.max(your_df$population)
+- Example: your_df[highest_pop_index, ]
+
+```{r}
+# ----- Index of max population (Šamorín) -----
+idx_max_pop <- which.max(bern_data$pop)
+bern_data[idx_max_pop, ]
+
+# ----- Index of min distance (Šamorín) -----
+idx_min_dist <- which.min(bern_data$dist_km)
+bern_data[idx_min_dist, ]
+```
+
