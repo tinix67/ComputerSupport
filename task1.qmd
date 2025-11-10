@@ -1,0 +1,264 @@
+---
+title: "Tasks"
+autor: "Tetiana Zubrova"
+date: "10/11/2025"
+format:
+  html:
+    embed-resources: true
+editor: source
+---
+
+### question 1. Atomic Types
+
+Create the following variables related to your chosen object:
+
+- **4 numeric** values (e.g., population, temperature, size, rating)  
+- **3 integer** values (e.g., number of moons, buildings, inhabitants)  
+- **2 logical** values (e.g., `has_water`, `is_inhabited`)  
+- **3 character** values (e.g., `name`, `region`, `category`)
+
+**Tip:** Think of these variables as *attributes* of your object.  
+Use `print()` or `cat()` to describe them in one sentence.
+
+```{r}
+# numeric values
+distance_to_bratislava_km <- 20.0    # km, approx.
+elevation_m <- 125                  # meters, approx.
+area_km2 <- 44.0                    # km², approx.
+avg_density <- 315                  # people per km², approx.
+
+# integer values
+population <- 13900L                # inhabitants, approx.
+num_districts <- 2L                 # Šamorín + Mliečno (historical part)
+num_schools <- 5L                   # approx. (primary + secondary)
+
+# logical values
+is_on_danube <- TRUE
+is_inhabited <- TRUE
+
+# character values
+name <- "Šamorín"
+region <- "Trnavský kraj"
+category <- "Mesto"
+```
+
+
+### question 2. Vectors
+
+Create three different vectors:
+
+1. **Numeric vector** combining all your numeric and integer variables.  
+   *(Use `c()`.)*
+
+2. **Sequence vector** from any number between 10–50 to 100, Choose step between 2 and 10.  
+   *(Use `seq()` or `:`.)*
+
+3. **Logical vector** of length 10 with random `TRUE`/`FALSE` values using `sample()`.
+
+```{r}
+# Values for Šamorín (approximate)
+population <- 13900L
+area_km2 <- 44.0
+
+# 1. Numeric vector
+numeric_vector <- c(population, area_km2)
+numeric_vector
+# Expected output:
+# [1] 13900.0 44.0
+
+# 2. Sequence vector (from 20 to 100 with step 5)
+sequence_vector <- seq(from = 20, to = 100, by = 5)
+sequence_vector
+# Expected output:
+# [1]  20  25  30  35  40  45  50  55  60  65  70  75  80  85  90  95 100
+
+# 3. Logical vector with 10 random TRUE/FALSE values (reproducible)
+set.seed(123)  # ensures repeatable result
+logical_vector <- sample(c(TRUE, FALSE), size = 10, replace = TRUE)
+logical_vector
+# Result will be reproducible when run in R
+```
+
+
+### question 3. Matrix
+
+Create a **3×3 matrix** with random numbers between **-50 and 50**  
+(using `sample()` or `runif()`), and name its **rows and columns** according to your theme.
+
+Then calculate row and column averages using `rowMeans()` and `colMeans()`.
+
+```{r}
+set.seed(42)  # reproducible
+
+# 3×3 matrix with random integers between -50 and 50 (by row)
+m <- matrix(
+  sample(-50:50, size = 9, replace = TRUE),
+  nrow = 3, ncol = 3, byrow = TRUE)
+
+rownames(m) <- c("Centrum", "Juhozápad", "Sever")
+colnames(m) <- c("Doprava", "Zeleň", "Voda")
+
+m
+#      Doprava Zeleň Voda
+# Centrum     31   -36  -47
+# Juhozápad   44   -15  -19
+# Sever      -22   -33   44
+
+# Row means
+row_avgs <- rowMeans(m)
+row_avgs
+# Centrum    : (31 + -36 + -47) / 3 = -17.33333
+# Juhozápad  : (44 + -15 + -19) / 3 =  3.33333
+# Sever      : (-22 + -33 + 44) / 3 = -3.66667
+
+# Column means
+col_avgs <- colMeans(m)
+col_avgs
+# Doprava : (31 + 44 + -22) / 3 = 17.66667
+# Zeleň   : (-36 + -15 + -33) / 3 = -28.00000
+# Voda    : (-47 + -19 + 44) / 3 = -7.33333
+```
+
+
+### question 4. List
+
+Create a **list** that combines all your previous objects:  
+atomic variables, vectors, and matrix.
+Add one extra element — a short **description** of your universe as a string.
+
+```{r}
+# ---------- Self-contained R block for Šamorín (exact structure you provided) ----------
+
+# Scalars (Šamorín)
+population <- 13672L
+area <- 44.35
+has_water <- TRUE
+is_inhabited <- TRUE
+name <- "Šamorín"
+old_name <- "Somorja"
+region <- "Trnavský kraj"
+category <- "selo"
+
+# Vectors
+numeric_vector <- c(population, area)
+sequence_vector <- seq(from = 20, to = 100, by = 5)
+
+# Logical vector (reproducible)
+set.seed(123)
+logical_vector <- sample(c(TRUE, FALSE), size = 10, replace = TRUE)
+
+# 3x3 matrix (reproducible)
+set.seed(42)
+m <- matrix(sample(-50:50, size = 9, replace = TRUE),
+            nrow = 3, ncol = 3, byrow = TRUE)
+rownames(m) <- c("Centrum", "Juh", "Sever")
+colnames(m) <- c("Doprava", "Zelen", "Voda")
+
+# Row and column means
+row_avgs <- rowMeans(m)
+col_avgs <- colMeans(m)
+
+# Build list (exact same keys/order as your original šamorínlist)
+šamorínlist<- list(
+  description = "Šamorín mini-universe: basic facts, vectors for practice, and a themed matrix with stats.",
+  
+  scalars = list(
+    population   = population,
+    area         = area,
+    has_water    = has_water,
+    is_inhabited = is_inhabited,
+    name         = name,
+    old_name     = old_name,
+    region       = region,
+    category     = category
+  ),
+  
+  vectors = list(
+    numeric  = numeric_vector,
+    sequence = sequence_vector,
+    logical  = logical_vector
+  ),
+  
+  matrix = m,
+  
+  matrix_stats = list(
+    row_means = row_avgs,
+    col_means = col_avgs
+  )
+)
+
+# Show structure
+str(šamorínlist)
+#
+```
+
+
+### question 5. Factor
+
+Create a **factor variable** representing categories within your universe, e.g.:
+
+- `"low"`, `"medium"`, `"high"`  
+- `"infant"`, `"child"`, `"adult"`  
+- `"poor"`, `"average"`, `"rich"`
+
+Make sure you have **at least 5 observations** total.  
+Then use `table()` to show how many objects fall into each category.
+
+```{r}
+development_level <- factor(
+  c("medium", "high", "medium", "low", "high", "medium", "low"),
+  levels = c("low", "medium", "high"), ordered = TRUE
+)
+
+# Check counts
+table(development_level)
+```
+
+
+### question 6. Data Frame
+
+Create a **data frame** related to your object that includes:
+
+1. **5–8 observations** (rows)  
+2. **At least 3 columns** of different data types  
+   (e.g., name, numeric value, logical flag, category)
+
+Then:
+
+- Rename the columns using `names()` or `colnames()`.  
+- Display its structure with `str()` and its summary with `summary()`.  
+- Add a new column derived from the others (for example, a ratio or condition).
+
+```{r}
+# ---------- Šamorín dataframe (ASCII-safe names) ----------
+
+samorin_df <- data.frame(
+  district = c("Centrum", "Juhozapad", "Sever", "Vychod", "Zahrady", "Pri_Jazere"),
+  pop      = c(3969, 2646, 2095, 2426, 1544, 992),               # numeric (scaled to total 13672)
+  has_playground = c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE),     # logical
+  zone = factor(c("mixed", "residential", "residential", "industrial", "residential", "recreational"),
+                levels = c("residential", "mixed", "industrial", "recreational")),
+  dist_km  = c(0.2, 1.4, 1.1, 2.3, 1.8, 2.7)                    # numeric
+)
+
+# Inspect
+str(samorin_df)
+summary(samorin_df)
+
+# Add derived column 'priority' with the same rule
+samorin_df$priority <- with(
+  samorin_df,
+  ifelse(pop > 1000 & !has_playground, "high",
+         ifelse(pop > 1000, "medium", "low"))
+)
+samorin_df$priority <- factor(samorin_df$priority, levels = c("low", "medium", "high"), ordered = TRUE)
+
+# Quick checks
+table(samorin_df$zone)
+table(samorin_df$priority)
+
+# Show the dataframe
+samorin_df
+#
+```
+
